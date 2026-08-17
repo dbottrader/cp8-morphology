@@ -5,7 +5,8 @@
   "type": "object",
   "required": [
     "component_id", "revision", "source", "license_state", "cp8_stage",
-    "input_sha256", "output_sha256", "benchmark", "invariance", "controls", "replay"
+    "input_sha256", "output_sha256", "benchmark", "invariance", "controls", "replay",
+    "claim_class", "observer_context"
   ],
   "properties": {
     "component_id": {"type": "string", "minLength": 1},
@@ -14,10 +15,14 @@
     "license_state": {
       "enum": ["permissive", "compatible", "unknown", "restricted", "internal"]
     },
+    "claim_class": {
+      "enum": ["OBSERVED", "MEASURED", "MATHEMATICAL_CORRESPONDENCE", "PHYSICAL_MECHANISM", "ANALOGY", "HYPOTHESIS", "SPECULATION"]
+    },
     "cp8_stage": {
       "enum": [
         "NORMALIZATION", "MEASUREMENT", "REPRESENTATION", "FORMALIZATION",
-        "SYMBOLIC_CHECK", "TRANSFORMATION_TEST", "MODEL_COMPARISON",
+        "TOPOLOGY", "PROCESS_MODEL", "LATTICE_CLASSIFICATION", "RESONANCE_MORPHOLOGY",
+        "EMERGENCE_ANALYSIS", "SYMBOLIC_CHECK", "TRANSFORMATION_TEST", "MODEL_COMPARISON",
         "CONTROL_COMPARISON", "FORMAL_PROOF", "RECEIPT"
       ]
     },
@@ -25,6 +30,68 @@
     "output_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
     "parameters": {"type": "object"},
     "seed": {"type": ["integer", "string", "null"]},
+    "observer_context": {
+      "type": "object",
+      "required": ["instrument_or_model", "frame"],
+      "properties": {
+        "instrument_or_model": {"type": "string"},
+        "frame": {"type": "string"},
+        "resolution": {"type": ["number", "string", "null"]},
+        "transform": {"type": ["string", "null"]},
+        "preprocessing": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "process_genome": {
+      "type": "object",
+      "properties": {
+        "known": {"type": "boolean"},
+        "generator": {"type": ["string", "null"]},
+        "operations": {"type": "array", "items": {"type": "string"}},
+        "order_hash": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "topology": {
+      "type": "object",
+      "properties": {
+        "connected_components": {"type": ["integer", "null"]},
+        "cycle_rank": {"type": ["integer", "null"]},
+        "winding_signature": {"type": ["string", "array", "null"]},
+        "persistent_signature": {"type": ["string", "array", "object", "null"]},
+        "deformation_invariant": {"type": ["boolean", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "lattice": {
+      "type": "object",
+      "properties": {
+        "class": {"type": ["string", "null"]},
+        "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "symmetry_group": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "dynamic_driver": {
+      "type": "object",
+      "properties": {
+        "family": {"enum": ["none", "periodic", "random", "fibonacci_word", "other"]},
+        "sequence": {"type": "array"},
+        "matched_control": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "analogy_firewall": {
+      "type": "object",
+      "properties": {
+        "source_domain": {"type": ["string", "null"]},
+        "target_domain": {"type": ["string", "null"]},
+        "mapping_defined": {"type": "boolean"},
+        "prediction_defined": {"type": "boolean"},
+        "mechanism_evidence": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
     "benchmark": {"$ref": "#/$defs/testResult"},
     "invariance": {"$ref": "#/$defs/testResult"},
     "controls": {"$ref": "#/$defs/testResult"},
