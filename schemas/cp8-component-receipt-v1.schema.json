@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asin-hhc.local/schemas/cp8-component-receipt-v1.json",
+  "title": "CP8 Component Evaluation Receipt v1",
+  "type": "object",
+  "required": [
+    "component_id", "revision", "source", "license_state", "cp8_stage",
+    "input_sha256", "output_sha256", "benchmark", "invariance", "controls", "replay"
+  ],
+  "properties": {
+    "component_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "string", "minLength": 1},
+    "source": {"type": "string", "minLength": 1},
+    "license_state": {
+      "enum": ["permissive", "compatible", "unknown", "restricted", "internal"]
+    },
+    "cp8_stage": {
+      "enum": [
+        "NORMALIZATION", "MEASUREMENT", "REPRESENTATION", "FORMALIZATION",
+        "SYMBOLIC_CHECK", "TRANSFORMATION_TEST", "MODEL_COMPARISON",
+        "CONTROL_COMPARISON", "FORMAL_PROOF", "RECEIPT"
+      ]
+    },
+    "input_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "output_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "parameters": {"type": "object"},
+    "seed": {"type": ["integer", "string", "null"]},
+    "benchmark": {"$ref": "#/$defs/testResult"},
+    "invariance": {"$ref": "#/$defs/testResult"},
+    "controls": {"$ref": "#/$defs/testResult"},
+    "replay": {"$ref": "#/$defs/testResult"},
+    "independent_reproduction": {"$ref": "#/$defs/testResult"},
+    "formal_proof": {
+      "type": "object",
+      "properties": {
+        "verified": {"type": "boolean"},
+        "system": {"type": "string"},
+        "artifact": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "failure_cases": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "string"}
+  },
+  "$defs": {
+    "testResult": {
+      "type": "object",
+      "required": ["pass"],
+      "properties": {
+        "pass": {"type": "boolean"},
+        "metric": {"type": "string"},
+        "value": {},
+        "threshold": {},
+        "dataset": {"type": "string"},
+        "details": {"type": "object"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
